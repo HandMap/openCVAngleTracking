@@ -42,7 +42,6 @@ int main(int, char**)
     cv::Point center_2;
     for(;;)
     {
-
         cap >> image_frame; // get a new frame from camera
         if (image_frame.empty()) break;
 
@@ -96,9 +95,7 @@ int main(int, char**)
         for( int i = 0; i < contours_2.size(); i++ )
         { mc_2[i] = cv::Point2f( mu_2[i].m10/mu_2[i].m00 , mu_2[i].m01/mu_2[i].m00 );}
 
-
         /// Draw contours
-
         for( int i = 0; i< contours_1.size(); i++ )
         {
             if  (mu_1[i].m00>1000){
@@ -109,7 +106,6 @@ int main(int, char**)
 
                 //std::cout<< "red pen: " <<mc[i] << '\n';
             }
-
         }
         for( int i = 0; i< contours_2.size(); i++ )
         {
@@ -121,10 +117,7 @@ int main(int, char**)
                 line(image_frame,center_2,center_1,color_1,4,8,0);
                 cv::putText(image_frame, (std::to_string(int(atan ( (abs(center_1.y-center_2.y)*1.0 /(center_1.x-center_2.x)*1.0))*(180.0/PI))) + "Deg"), (center_2 + cv::Point(-100,0)),CV_FONT_HERSHEY_DUPLEX,1,cv::Scalar(0,255,0),1,8);
                 line(image_frame,center_2,cv::Point(image_frame.cols,center_2.y),color_2,4,8,0);
-
-
             }
-
         }
         std::cout <<"Point 1" <<center_1 <<",  Point 2"<< center_2
                   << "  angle :" <<atan ( (abs(center_1.y-center_2.y)*1.0 /(center_1.x-center_2.x)*1.0))*(180.0/PI)
