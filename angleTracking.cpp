@@ -29,14 +29,24 @@ int main(int, char**)
     cv::vector<cv::Vec4i> hierarchy_1;
     cv::vector<cv::Vec4i> hierarchy_2;
 
-    cv::Scalar color_1 = cv::Scalar( 255, 0, 0 );
-    cv::Scalar color_2 = cv::Scalar( 0, 0, 255 );
+    cv::Scalar color_1 = cv::Scalar( 255, 0, 0 ); // Blue
+    cv::Scalar color_2 = cv::Scalar( 0, 255, 255 ); // Yellow
+    //cv::Scalar color_2 = cv::Scalar( 0, 0, 255 ); // Red
+
     cv::Mat image_frame;
     cv::namedWindow("Angles",0);
 
     std::string point1;
     std::string point2;
 
+    cv::Scalar min_blue = cv::Scalar(110,50,50);
+    cv::Scalar max_blue = cv::Scalar(130,255,255);
+
+    cv::Scalar min_red = cv::Scalar(0,150,150);
+    cv::Scalar max_red = cv::Scalar(10,255,255);
+
+    cv::Scalar min_yellow = cv::Scalar(30,100,100);
+    cv::Scalar max_yellow = cv::Scalar(50,255,255);
 
     cv::Point center_1;
     cv::Point center_2;
@@ -50,18 +60,19 @@ int main(int, char**)
                      image_HSV, // output image in HSV
                      CV_BGR2HSV); // constant refering to color space transformation
 
-        //filtering image for colors
+        // Filtering image for colors
         cv::inRange(image_HSV, //input image to be filtered
-                    cv::Scalar(110,50,50), //min thresshold value
-                    cv::Scalar(130,255,255), // max threshold value
+                    min_blue, //min thresshold value
+                    max_blue, // max threshold value
                     image_Color1); //output image
 
+        // define range of red color in HSV
         cv::inRange(image_HSV, //input image to be filtered
-                    cv::Scalar(0,150,150), //min thresshold value
-                    cv::Scalar(10,255,255), // max threshold value
+                    min_yellow, //min thresshold value
+                    max_yellow, // max threshold value
                     image_Color2); //output image
 
-        /// Find contours
+        // Find contours
         findContours( image_Color1, // input image
                       contours_1, // vector to save contours
                       hierarchy_1,
@@ -86,7 +97,7 @@ int main(int, char**)
         for( int i = 0; i < contours_2.size(); i++ )
         { mu_2[i] = moments( contours_2[i], false ); }
 
-        ///  Get the mass centers:
+        // Get the mass centers
         cv::vector<cv::Point2f> mc_1(contours_1.size()); //vector to store all the center points of the contours.
         for( int i = 0; i < contours_1.size(); i++ )
         { mc_1[i] = cv::Point2f( mu_1[i].m10/mu_1[i].m00 , mu_1[i].m01/mu_1[i].m00 );}
@@ -95,7 +106,7 @@ int main(int, char**)
         for( int i = 0; i < contours_2.size(); i++ )
         { mc_2[i] = cv::Point2f( mu_2[i].m10/mu_2[i].m00 , mu_2[i].m01/mu_2[i].m00 );}
 
-        /// Draw contours
+        // Draw contours
         for( int i = 0; i< contours_1.size(); i++ )
         {
             if  (mu_1[i].m00>1000){
@@ -126,6 +137,6 @@ int main(int, char**)
 
         if(cv::waitKey(30) >= 0) break;
     }
-    // the camera will be deinitialized automatically in VideoCapture destructoratan
+    // The camera will be deinitialized automatically in VideoCapture destructoratan
     return 0;
 }
